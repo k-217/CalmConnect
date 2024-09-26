@@ -4,16 +4,6 @@ $sources:
     format: binary
     with_metadata: true
 
-  - !pw.io.gdrive.read
-    object_id: "1iwTeJZfsQoJqEYuOlHOpLPMzfgo-Kx8e"
-    service_user_credentials_file: gdrive_indexer.json
-    name_pattern:
-      - "*.pdf"
-      - "*.pptx"
-    object_size_limit: null
-    with_metadata: true
-    refresh_interval: 30
-
 $llm: !pw.xpacks.llm.llms.OpenAIChat
   model: "gpt-3.5-turbo"
   retry_strategy: !pw.udfs.ExponentialBackoffRetryStrategy
