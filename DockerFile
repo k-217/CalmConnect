@@ -1,0 +1,22 @@
+FROM python:3.9-slim
+
+#set working directory
+WORKDIR /app
+
+#installing system dependencies
+RUN apt-get update \
+    && apt-get install -y python3-opencv tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+#copyting requirements and installing python dependencies
+COPY . /app
+RUN pip install -U --no-cache-dir -r requirements.txt 
+
+#copying application code
+COPY . .
+
+#exposing the application port
+EXPOSE 8000
+
+#command to run the application
+CMD ["uvicorn", "index:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

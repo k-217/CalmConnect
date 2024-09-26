@@ -1,0 +1,7 @@
+DOCKER
+fastapi
+uvicorn
+presidio-analyzer
+pathwaycom
+python-dotenv
+sentence-transformers
