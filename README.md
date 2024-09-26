@@ -1,6 +1,6 @@
 # CalmConnect: Your Mental Health Companion
 
-Calm Connect is a fundamental Retrieval-Augmented Generation based app that is designed to provide mental consultation or simply someplace in the artificial universe where one can open up and share valid experiences. It provides real-time answers to all the user asks and also does not judge you for every emotion. It suggests pratical techniques for managing stress and anxiety. Have faith and it will be your perfect friend in the times of need! Happy Chatting!
+Calm Connect is a fundamental Retrieval-Augmented Generation based app that is designed to provide mental consultation or simply someplace in the artificial universe where one can open up and share valid experiences. It provides real-time answers to all the user asks and also does not judge you for every emotion. It suggests pratical techniques for managing stress and anxiety. While it is not a substitute for professional therapy, it can complement traditional mental health care by offering immediate support and information. Have faith and it will be your perfect friend in the times of need! Happy Chatting!
 
 ## Features
 
@@ -38,6 +38,7 @@ The video for demo may be found [here]().
 - **Advanced PII Detection**: Implement more robust models or services for PII detection.
 - **User Authentication**: Ensure user sessions are secure with authentication measures.
 - **Natural Language Understanding**: Improve the understanding of user intents and emotions.
+- **Mood Tracking and Check-Ins**: Facilitate regular check-ins, helping users monitor their moods and identify patterns over time.
 
 ## Installation
 
