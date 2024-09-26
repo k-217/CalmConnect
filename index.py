@@ -21,20 +21,20 @@ import numpy as np
 
 pw.set_license_key('239239-349AF7-177B05-8B461E-8D449B-V3')
 
-# Loading environment variables
+# loading environment variables
 load_dotenv()
 
-# Retrieving API key and model name from environment variables
+# retrieving API key and model name from environment variables
 API_KEY = os.getenv('API_KEY')
 MODEL_NAME = os.getenv('MODEL_NAME')
 
-# Checking if required variables are set
+# checking if required variables are set
 if API_KEY is None:
     raise ValueError("API_KEY must be set in the environment variables.")
 if MODEL_NAME is None:
     raise ValueError("MODEL_NAME must be set in the environment variables.")
 
-# Setting up logging
+# setting up logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -45,11 +45,30 @@ app = FastAPI()
 
 class DocumentIndexingApp(BaseModel):
     document_store: DocumentStore
+    data_file: list[str] = ['data/data.txt', 'data/data2.txt]
     host: str = "0.0.0.0"
     port: int = 8000
     with_cache: bool = True
     terminate_on_error: bool = False
     model: SentenceTransformer = SentenceTransformer('all-MiniLM-L6-v2')
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.load_documents()
+
+    def load_documents(self):
+        # loading documents from the specified text files.
+        for data_file in self.data_files:
+            if os.path.exists(data_file):
+                with open(data_file, 'r') as file:
+                    for line in file:
+                        line = line.strip()
+                        if line:  # checking if the line is not empty
+                            self.document_store.add_document(source=data_file, text=line)
+                logging.info(f"Loaded documents from {data_file}.")
+            else:
+                logging.error(f"Data file {data_file} does not exist.")
+                raise FileNotFoundError(f"Data file {data_file} does not exist.")
 
     def run(self) -> None:
         logging.info("App is ready to accept requests.")
@@ -65,18 +84,18 @@ class DocumentIndexingApp(BaseModel):
             return "I'm sorry, but I can't process sensitive information."
         
         try:
-            # Get all document texts from the document store
+            # getting all document texts from the document store
             document_texts = [doc.text for doc in self.document_store.get_all_documents()]
             if not document_texts:
                 return "I'm sorry, couldn't find relevant information!"
 
-            # Creating embeddings for user input and documents
+            # creating embeddings for user input and documents
             user_embedding = self.model.encode(user_input, convert_to_tensor=True)
             document_embeddings = self.model.encode(document_texts, convert_to_tensor=True)
 
-            # Calculating cosine similarity
+            # calculating cosine similarity
             cosine_scores = util.pytorch_cos_sim(user_embedding, document_embeddings)[0]
-            top_results_idx = np.argsort(cosine_scores.numpy())[-max_results:][::-1]  # Getting top five indices
+            top_results_idx = np.argsort(cosine_scores.numpy())[-max_results:][::-1]  # getting top five indices
 
             # preparing the response
             responses = []
@@ -92,12 +111,12 @@ class DocumentIndexingApp(BaseModel):
             return "An error occurred while searching for information."
 
     
-# Instantiating the app
+# instantiating the app
 document_indexing_app = DocumentIndexingApp(document_store=DocumentStore())
 
 @app.post("/feedback")
 async def feedback(user_id: str, input_text: str, rating: int):
-    # Store or process feedback here
+    # storing or processing feedback here
     logging.info(f"User {user_id} rated input '{input_text}' with a score of {rating}.")
     return {"message": "Thank you for your feedback!"}
 
